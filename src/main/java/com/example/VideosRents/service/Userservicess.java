@@ -34,6 +34,9 @@ public class Userservicess {
      @Autowired
      private VideoRepository videoRepository;
 
+     @Autowired
+     JWTService jwtService;
+
 
     public Respbodyall register(Registerbody registerbody){
         if(registerbody.getRole()==null){
@@ -44,29 +47,39 @@ public class Userservicess {
         .email(registerbody.getEmail()).password(passwordEncoder.encode(registerbody.getPassword())).
         role(registerbody.getRole()).build();
 
+
+
      userrepository.save(user);
 
-        return  Respbodyall.builder().build();
+     String jwt=jwtService.generateToken(user);
+
+        return  Respbodyall.builder().token(jwt).build();
     }
 
     public Respbodyall login(loginbody loginbody){
              
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginbody.getEmail(), loginbody.getPassword()));
+        User user=userrepository.findByEmail(loginbody.getEmail());
+        String token=jwtService.generateToken(user);
             
-        return Respbodyall.builder().build();
+        return Respbodyall.builder().token(token).build();
         
     } 
-    public Respbodyall ADDvideo(Video video){
-          if(video.getAvailibilty()==null){
-            video.setAvailibilty(Availibilty.AVAILABLE);
-          }
-             
-           Video video2=Video.builder().Title(video.getTitle()).Genre(video.getGenre())
-           .availibilty(video.getAvailibilty()).build();
-           
-          videoRepository.save(video2);
-            
+    public Respbodyall ADDvideo(Video video) {
+        if (video.getAvailability() == null) { // Using corrected field name
+            video.setAvailability(Availibilty.AVAILABLE);
+        }
+    
+        // Build the Video object using lowercase field names
+        Video video2 = Video.builder()
+                .title(video.getTitle()) // Correct lowercase method
+                .genre(video.getGenre()) // Correct lowercase method
+                .availability(video.getAvailability()) // Correct lowercase method
+                .build();
+    
+        videoRepository.save(video2);
+    
         return Respbodyall.builder().build();
-        
-    } 
+    }
+    
 }

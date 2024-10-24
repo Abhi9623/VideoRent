@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 @Document(collection = "Videos")
 public class Video {
     @Id
-    private String Id;
-    private String Title;
-    private String Genre;
-    private Availibilty availibilty;
+    private String id; // Changed Id to id for consistency
+    private String title; // Changed Title to title
+    private String genre; // Changed Genre to genre
+    private Availibilty availability; // Fixed spelling from availibilty to availability
 }
